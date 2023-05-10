@@ -1,23 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import NavBar from './components/Navbar';
+import BucketList from './components/BucketList';
 
-function App() {
+const App = () => {
+  const [tasks,setTasks] = useState([]);
+
+  const handleNewTask = (task) => {
+    setTasks([...tasks,task]);
+  }
+
+  const [buckets,setBuckets] = useState([]);
+
+  const handleNewBucket = (newBucket) => {
+      setBuckets([...buckets,newBucket]);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='w-screen bg-zinc-300 h-screen'>
+      <NavBar/>
+      <BucketList buckets={buckets} tasks={tasks} handleNewTask={handleNewTask} handleNewBucket={handleNewBucket}></BucketList>
     </div>
   );
 }
