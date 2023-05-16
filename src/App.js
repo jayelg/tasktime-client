@@ -73,7 +73,8 @@ const App = () => {
     },
   ]);
 
-  const initializeTaskStream = (parentTask) => {
+  const initializeTaskStream = (parentTask) => { // logic is broken redo
+    //
     const lastItem = taskStreams[taskStreams.length - 1];
     lastItem.id = taskStreamCounter;
     lastItem.parentTask = parentTask;
@@ -81,15 +82,15 @@ const App = () => {
     lastItem.isVisible = true;
     lastItem.bgColour = GetBucketColour();
     taskStreamCounter++;
-    setTaskStream([...taskStreams,
-      {
-        id: taskStreamCounter,
-        parentTask: parentTask,
-        name: `Add Stream`,
-        isActive: false,
-        bgColour: 'bg-zinc-500',
-      }]);
-    setTasks([...tasks,])
+    const initialTasks = [templateTask, templateTask];
+    initialTasks[0].id = taskCounter;
+    initialTasks[0].parentTask = lastItem.id; 
+    taskCounter++;
+    initialTasks[1].id = taskCounter
+    initialTasks[1].parentTask = lastItem.id; 
+    setTaskStream([...taskStreams.slice(0,-1),lastItem,]); // need to add new add button item. maybe handle that another way to reduce confusion
+    
+    setTasks([...tasks,...initialTasks]);
   };
 
   const appCallBackFunctions = {handleNewTask, updateTaskProperty, initializeTaskStream}; // added functions to object to manage passing props 
@@ -103,3 +104,5 @@ const App = () => {
 }
 
 export default App;
+
+
