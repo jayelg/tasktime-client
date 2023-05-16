@@ -13,7 +13,7 @@ https://app.diagrams.net/#Hjayelg%2Ftasktime-react%2Fmain%2FData%20Structure.dra
 * Add task delete functionality
 * Add side bar or central overlay task details view
 * Add drag and drop functioanlity (potentially a library)
-* --Nesting tasklists into tasks-- task streams are now an array within tasks
+* ~~Nesting tasklists into tasks~~ task streams are now an array within tasks
 * Add 3D CSS transform effect for drag and drop
 * Add weekly planner view
 * Add breadcrumb of tasks
