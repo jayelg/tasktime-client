@@ -2,8 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { store } from './app/store'
-import { Provider } from 'react-redux'
+import { Provider } from 'react-redux';
+import { store } from './store/index';
+import axios from "axios";
+
+
+const apiBaseUrl = 'http://localhost:3010';
+
+axios.defaults.baseURL = apiBaseUrl;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -13,4 +19,3 @@ root.render(
     </Provider>
   </React.StrictMode>
 );
-

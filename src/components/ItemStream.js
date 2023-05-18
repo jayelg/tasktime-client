@@ -1,16 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Tile from './Tile';
 import { IconContext } from "react-icons";
 import { HiPlusSm } from "react-icons/hi";
+import { useSelector } from 'react-redux';
 
-const TaskStream = (props) => {
+const ItemStream = (props) => {
+    const [showItems, setShowItems] = useState(false);
+    const items = useSelector((state) => state.project.data.items);
     
+    useEffect(() => {
+        setShowItems(true);
+      }, []);
+
     const handleClickNewTask = () => {
-        props.appCallBackFunctions.handleNewTask(props.id);
+        props.appCallBackFunctions.handleNewTask(props.thisItem.id);
     }
 
     const handleClickNewTaskStream = () => {
-        props.appCallBackFunctions.initializeTaskStream(props.parentTask);
+        props.appCallBackFunctions.initializeTaskStream(props.item.parentItem);
     }
 
 
@@ -20,9 +27,8 @@ const TaskStream = (props) => {
 
     return (
         <div className={`justify-center h-fit overflow-hidden max-w-xs m-1`}>
-
-                {props.tasks && props.tasks.map((task) => {
-                        return task.parentTaskStream === props.id ? <Tile key={task.id} task={task} appCallBackFunctions={props.appCallBackFunctions}/> : null;
+                {items && items.map((newItem) => {
+                        return newItem.parentItemId === props.thisItem._id ? <Tile key={newItem._id} isVisible={showItems} thisItem={newItem} appCallBackFunctions={props.appCallBackFunctions}/> : null;
                     }
                 )
                 }
@@ -36,4 +42,4 @@ const TaskStream = (props) => {
     )
 }
 
-export default TaskStream;
+export default ItemStream;
