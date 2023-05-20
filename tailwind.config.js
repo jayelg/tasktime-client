@@ -12,6 +12,9 @@ module.exports = {
       transitionProperty: {
         'tile': 'height, opacity, color, background-color, border-color, text-decoration-color, fill, stroke',
       },
+      transitionDuration: {
+        '1500': '1500ms',
+      },
       minHeight: {
         '16': '4rem',
       },
