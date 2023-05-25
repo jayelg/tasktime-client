@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Tile from './Tile';
 import { IconContext } from "react-icons";
-import { HiPlusSm } from "react-icons/hi";
+import { HiPlusSm, HiX } from "react-icons/hi";
 import { useSelector, useDispatch } from 'react-redux';
-import { addItemToProject } from '../slices/projectSlice';
-import GetColour from '../utils/GetColour';
-import { v4 as uuidv4 } from 'uuid';
+import { addItemToProject, deleteItem, updateItemProperty } from '../slices/projectSlice';
+import { Droppable } from 'react-beautiful-dnd';
+import NewItem from '../utils/NewItem';
 
 const ItemStream = (props) => {
     const dispatch = useDispatch();
@@ -13,29 +13,68 @@ const ItemStream = (props) => {
         return state.project.data.items.filter(item => item.parentItemId === props.thisItem._id);
     });
 
-    const handleOnClick = () => {
-        const tempId = uuidv4();
-        const newItem = {
-            _id: tempId,
-            name: "New Item",
-            creator: "John",
-            parentItemId: props.thisItem._id,
-            colour: GetColour(),
-        }
-        dispatch(addItemToProject(newItem));
+    const handleAddItem = () => {
+        dispatch(addItemToProject(NewItem(props.thisItem._id)));
     };
 
-    return (
-        <div className={`justify-center h-fit overflow-hidden max-w-xs m-1`}>
-            {items && items.map((newItem, index ) =>
-                <Tile key={newItem._id} index={(1 + index)} isNew={newItem.isNew || false} thisItem={newItem} appCallBackFunctions={props.appCallBackFunctions}/>
-            )}
+    const [isVisible, setIsVisible] = useState(props.thisItem.isRendered);
 
-            <div onClick={handleOnClick} className={`flex justify-center h-fit text-white cursor-pointer`}>
-                <IconContext.Provider value={{ color: "black", size:"2em"}}>
-                    <HiPlusSm/>
-                </IconContext.Provider>
+    useEffect(() => {
+        setTimeout(() => {
+          setIsVisible(true);
+          dispatch(updateItemProperty({itemId: props.thisItem._id, property: "isRendered", value: true}));
+        }, 0); // creates a cascading animation for the order of each item, new items skip the delay
+      }, [props.index]);
+
+
+
+    const handleRemoveStream = () => {
+        setIsVisible(false);
+        setTimeout(() => {
+            dispatch(deleteItem(props.thisItem._id));
+          }, 500); // to match the transition duration
+        
+    }
+
+    // Hide Tiles that push itemStream off screen
+    const itemStreamRef = useRef(null);
+
+    const bgColour = "bg-" + props.thisItem.colour + "-500";
+    const highlightColour = "bg-" + props.thisItem.colour + "-300";
+
+    return (
+        <div className={`transition-all ${isVisible === true ? 'w-96 opacity-100 p-4' : 'w-0 opacity-0'}`}>
+            <div className="flex relative">
+                <div className={`text-xl m-auto h-10 px-4 py-1`}>{props.thisItem.name}</div>
+                <div onClick={handleRemoveStream} className={`absolute right-0 p-2 pr-4 h-fit cursor-pointer justify-end`}>
+                    <IconContext.Provider value={{ color: "black", size:"1.2em"}}>
+                        <HiX/>
+                    </IconContext.Provider>
+                    </div>
             </div>
+            <Droppable droppableId={props.thisItem._id}>
+                {(provided, snapshot) => (
+                <div ref={provided.innerRef} {...provided.droppableProps} className={`min-h-16 grid content-center rounded-xl shadow-cutout overflow-hidden ${bgColour}`}>
+                    {items && items.map((newItem, index ) =>
+                        <Tile
+                            key={newItem._id}
+                            index={index}
+                            isNew={newItem.isNew || false}
+                            thisItem={newItem}
+                            listLength={items.length}
+                            handleAddItem={handleAddItem}
+                            parentColour={highlightColour}
+                        />
+                    )}
+                    {provided.placeholder}
+                    <div onClick={handleAddItem} className={`${items.length === 0 ? `h-16` : `h-fit`} grid place-content-center cursor-pointer`}>
+                        <IconContext.Provider value={{ color: "black", size:"2em"}}>
+                            <HiPlusSm/>
+                        </IconContext.Provider>
+                    </div>
+                </div>
+                )}
+            </Droppable>
         </div>
     );
 }

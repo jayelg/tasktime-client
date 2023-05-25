@@ -5,6 +5,7 @@ import App from './App';
 import { Provider } from 'react-redux';
 import { store } from './store/index';
 import axios from "axios";
+import { DragDropContext } from 'react-beautiful-dnd';
 
 
 const apiBaseUrl = 'http://localhost:3010';
@@ -15,7 +16,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <DragDropContext>
+        <App class="scroll-smooth" />
+      </DragDropContext>
     </Provider>
   </React.StrictMode>
 );

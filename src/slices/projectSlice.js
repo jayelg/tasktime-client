@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getProjectById, postNewItem } from "../services/projectService";
+import { getProjectById, postNewItem, deleteItemfromServer, patchItem } from "../services/projectService";
 
 const initialState = {
   data: null,
@@ -14,8 +14,7 @@ const projectSlice = createSlice({
     setProject: (state, action) => {
       const projectData = action.payload;
       state.data = {
-        ...projectData,
-        items: projectData.items || [],
+        ...projectData || [],
       };
     },
     clearProject: (state) => {
@@ -27,12 +26,27 @@ const projectSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
-    setisNew: (state, action) => {
-      state.data.items[action.payload] = false;
+    setItemProperty: (state, action) => {
+      const { itemId, property, value } = action.payload;
+      const itemIndex = state.data.items.findIndex((item) => item._id === itemId);
+      if (itemIndex !== -1) {
+        state.data.items[itemIndex][property] = value;
+      }
     },
     addItem: (state, action) => {
       state.data.items.push(action.payload);
     },
+    updateItem: (state, action) => {
+      const { itemId, data } = action.payload;
+      const itemIndex = state.data.items.findIndex((item) => item._id === itemId);
+      if (itemIndex !== -1) {
+        state.data.items[itemIndex] = data;
+      }
+    },
+    removeItem: (state, action) => {
+      const itemId = action.payload.toString();
+      state.data.items = state.data.items.filter(item => item._id.toString() !== itemId);
+    }
   },
 });
 
@@ -41,7 +55,11 @@ export const {
   clearProject,
   setLoading,
   setError,
+  setItemProperty,
   addItem,
+  updateItem,
+  removeItem,
+  
 } = projectSlice.actions;
 
 export const fetchProject = (projectId) => async (dispatch) => {
@@ -56,15 +74,20 @@ export const fetchProject = (projectId) => async (dispatch) => {
   }
 };
 
-// this will be unreponsive on a server delay
-// opportunity to update store first then update again.
 export const addItemToProject = (newItem) => async (dispatch, getState) => {
   try {
     dispatch(setLoading(true));
     const projectId = getState().project.data._id;
+    // create placeholder item for quick render
+    dispatch(addItem(newItem));
+    // post and recieve proper item from api
     const response = await postNewItem(projectId, newItem);
-    const updatedItem = { ...response.data, isNew: true };
-    dispatch(addItem(updatedItem));
+    // isRendered property bypasses transition animation for seamless replacement of placeholder item
+    response.data.isRendered = true;
+    response.data.isNew = true;
+    dispatch(updateItem({
+      itemId: newItem._id,
+      data: response.data}));
   } catch (error) {
     dispatch(setError(error.message));
   } finally {
@@ -72,13 +95,38 @@ export const addItemToProject = (newItem) => async (dispatch, getState) => {
   }
 };
 
-export const updateItemProperty = (newItem) => async (dispatch, getState) => {
+export const updateItemProperty = (data) => async ( dispatch, getState ) => {
   try {
     dispatch(setLoading(true));
     const projectId = getState().project.data._id;
-    const response = await postNewItem(projectId, newItem);
-    const updatedItem = { ...response.data, isNew: true };
-    dispatch(addItem(updatedItem));
+    dispatch(setItemProperty(projectId, data));
+    if (data.property !== "isRendered") {
+      console.log(data);
+      console.log(await patchItem(projectId, data));
+    }
+  } catch (error) {
+    dispatch(setError(error.message));
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
+
+export const updateItemPosition = (destinationItemId, sourceItemId, index) => async ( dispatch, getState ) => {
+  try {
+    // todo
+  } catch (error) {
+    dispatch(setError(error.message));
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
+
+export const deleteItem = (itemId) => async (dispatch, getState) => {
+  try {
+    dispatch(setLoading(true));
+    dispatch(removeItem(itemId));
+    const projectId = getState().project.data._id;
+    await deleteItemfromServer(projectId, itemId);
   } catch (error) {
     dispatch(setError(error.message));
   } finally {
