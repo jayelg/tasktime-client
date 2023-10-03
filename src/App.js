@@ -1,12 +1,12 @@
 import React from 'react';
 import NavBar from './components/Navbar';
-import BucketView from './components/BucketView';
+import StreamView from './components/StreamView';
 
 const App = () => {
   return (
-    <div className='flex flex-col h-screen min-w-auto dark:bg-zinc-900'>
+    <div className='flex flex-col h-screen dark:bg-zinc-800 text-zinc-900 dark:text-zinc-400 transition-colors duration-500 scrollbar-hide'>
       <NavBar/>
-      <BucketView />
+      <StreamView />
     </div>
   );
 }

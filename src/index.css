@@ -6,3 +6,9 @@ body {
     --tw-bg-opacity: 1;
     background-color: rgb(212 212 216 / var(--tw-bg-opacity));;
 }
+
+[contenteditable=true]:empty:before {
+    content: attr(placeholder);
+    display: block;
+    color: rgb(39 39 42)
+  }

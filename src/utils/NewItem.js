@@ -1,15 +1,17 @@
 import { v4 as uuidv4 } from 'uuid';
 import GetColour from './GetColour';
 
-const NewItem = (parentItemId) => {
+const NewItem = (parentItemId, lastColour) => {
     const tempId = uuidv4();
     return {
             _id: tempId,
-            name: "New Item",
+            name: "",
             creator: "John",
             parentItemId: parentItemId,
-            colour: GetColour(),
+            colour: GetColour(lastColour),
             isNew: true,
+            isRendered: false,
+            isFocus: false,
             successorItemIds: [], // required to avoid errors when initial placeholder item is created in store
             predecessorItemIds: [],
         }
