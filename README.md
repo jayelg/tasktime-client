@@ -1,22 +1,80 @@
-# Task Time
+![reactjs-vite-tailwindcss-boilerplate](https://user-images.githubusercontent.com/16243531/217138979-b854309c-4742-4275-a705-f9fec5158217.jpg)
 
-React based client with Redux.
+# React Tailwindcss Boilerplate build with Vite
 
-# Figma Working Design
-https://www.figma.com/file/PtDcQ5yqeCS2KM6nUqTkFq/Task-Time?type=design&t=ewiAA0zi85UmXki7-6
+This is a boilerplate build with Vite, React 18, TypeScript, Vitest, Testing Library, TailwindCSS 3, Eslint and Prettier.
 
-# Data Structure Design
-The data structure design file Data Structure.drawio in the root of this repo can be viewed on diagrams.org
-https://app.diagrams.net/#Hjayelg%2Ftasktime-react%2Fmain%2FData%20Structure.drawio
+## What is inside?
 
-# To do
-* Add task delete functionality
-* Add side bar or central overlay task details view
-* Add drag and drop functioanlity (potentially a library)
-* ~~Nesting tasklists into tasks~~ task streams are now an array within tasks
-* Add 3D CSS transform effect for drag and drop
-* Add weekly planner view
-* Add breadcrumb of tasks
-* Add decision loopback
-* Add backend storage/user jwt authentication
+This project uses many tools like:
 
+- [Vite](https://vitejs.dev)
+- [ReactJS](https://reactjs.org)
+- [TypeScript](https://www.typescriptlang.org)
+- [Vitest](https://vitest.dev)
+- [Testing Library](https://testing-library.com)
+- [Tailwindcss](https://tailwindcss.com)
+- [Eslint](https://eslint.org)
+- [Prettier](https://prettier.io)
+
+## Getting Started
+
+### Install
+
+Create the project.
+
+```bash
+npx degit joaopaulomoraes/reactjs-vite-tailwindcss-boilerplate my-app
+```
+
+Access the project directory.
+
+```bash
+cd my-app
+```
+
+Install dependencies.
+
+```bash
+pnpm install
+```
+
+Serve with hot reload at <http://localhost:5173>.
+
+```bash
+pnpm run dev
+```
+
+### Lint
+
+```bash
+pnpm run lint
+```
+
+### Typecheck
+
+```bash
+pnpm run typecheck
+```
+
+### Build
+
+```bash
+pnpm run build
+```
+
+### Test
+
+```bash
+pnpm run test
+```
+
+View and interact with your tests via UI.
+
+```bash
+pnpm run test:ui
+```
+
+## License
+
+This project is licensed under the MIT License.
