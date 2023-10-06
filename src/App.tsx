@@ -1,21 +1,20 @@
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import Section from './components/common/Section'
-import { MainPublicNav } from './components/header/MainPublicNav'
+import { MainNav } from './components/header/MainNav'
 import { SiteHeader } from './components/header/Header'
-import { useLocation, Routes, Route, useNavigate } from 'react-router-dom'
 import AvatarDropDown from './components/header/AvatarDropDown'
-import { publicRoutes } from './pages/routes'
-import Loading from 'components/common/Loading'
-import { useTransition, animated } from '@react-spring/web'
 import { LaunchButton } from 'components/header/LaunchButton'
+import Page from 'pages/page'
+import { useNavigate } from 'react-router-dom'
 
 function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(
     localStorage.getItem('jwt') !== null
   )
-  const location = useLocation()
+
   const navigate = useNavigate()
+
   const isAppPath = /^\/app(\/|$)/.test(location.pathname.toLowerCase()) // ie. does the path start with app or app/*
 
   useEffect(() => {
@@ -47,23 +46,14 @@ function App() {
     }
   }, [])
 
-  const pageTransitions = useTransition(location, {
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
-    keys: (location) => location.pathname
-  })
-
   return (
     <div className="min-h-screen bg-background font-sans antialiased transition-colors duration-500">
       {/* relative flex min-h-screen min-w-full flex-col */}
       <SiteHeader>
-        {isAppPath ? (
-          <MainPublicNav userLoggedIn={false} />
-        ) : (
-          <MainPublicNav userLoggedIn={userLoggedIn} />
-        )}
-        <LaunchButton userLoggedIn={userLoggedIn} />
+        <MainNav isAppPath={isAppPath} userLoggedIn={userLoggedIn} />
+        {!isAppPath || !userLoggedIn ? (
+          <LaunchButton userLoggedIn={userLoggedIn} />
+        ) : null}
         {userLoggedIn ? (
           <AvatarDropDown
             setUserLoggedIn={setUserLoggedIn}
@@ -73,24 +63,7 @@ function App() {
         ) : null}
       </SiteHeader>
       <Section>
-        {pageTransitions((style) => (
-          <animated.div
-            style={style}
-            className="absolute left-8 top-[80px] h-full w-full"
-          >
-            <Suspense fallback={<Loading />}>
-              <Routes>
-                {publicRoutes.map((route, index) => (
-                  <Route
-                    key={index}
-                    path={route.href}
-                    element={<route.component />}
-                  />
-                ))}
-              </Routes>
-            </Suspense>
-          </animated.div>
-        ))}
+        <Page userLoggedIn={userLoggedIn} />
       </Section>
     </div>
   )
