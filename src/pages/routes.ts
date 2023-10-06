@@ -1,38 +1,26 @@
 import { lazy } from 'react'
+import iRoutes from './routes.interface'
 
 export type PublicRoutes = typeof publicRoutes
-
-interface iRoutes {
-  title: string
-  href: string
-  component: React.LazyExoticComponent<() => JSX.Element>
-  mainNav: boolean
-}
 
 export const publicRoutes: Array<iRoutes> = [
   {
     title: 'Home',
     href: '/',
-    component: lazy(() => import('./home/index.page')),
+    component: lazy(() => import('./home')),
     mainNav: false
   },
   {
     title: 'Features',
     href: '/features',
-    component: lazy(() => import('./features/index.page')),
+    component: lazy(() => import('./features')),
     mainNav: true
   },
   {
     title: 'Documentation',
     href: '/docs',
-    component: lazy(() => import('./docs/index.page')),
+    component: lazy(() => import('./docs')),
     mainNav: true
-  },
-  {
-    title: 'App',
-    href: '/app',
-    component: lazy(() => import('./app/index.page')),
-    mainNav: false
   }
 ]
 
